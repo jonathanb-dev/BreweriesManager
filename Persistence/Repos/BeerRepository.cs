@@ -1,4 +1,5 @@
-﻿using Domain;
+﻿using Domain.Models;
+using Domain.Repos;
 
 namespace Persistence.Repos
 {

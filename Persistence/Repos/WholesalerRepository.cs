@@ -1,8 +1,9 @@
-﻿using Domain;
+﻿using Domain.Models;
+using Domain.Repos;
 
 namespace Persistence.Repos
 {
-    class WholesalerRepository : Repository<Wholesaler>, IWholesalerRepository
+    public class WholesalerRepository : Repository<Wholesaler>, IWholesalerRepository
     {
         private DataContext _context;
 

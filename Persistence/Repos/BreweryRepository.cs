@@ -1,8 +1,9 @@
-﻿using Domain;
+﻿using Domain.Models;
+using Domain.Repos;
 
 namespace Persistence.Repos
 {
-    class BreweryRepository : Repository<Brewery>, IBreweryRepository
+    public class BreweryRepository : Repository<Brewery>, IBreweryRepository
     {
         private DataContext _context;
 

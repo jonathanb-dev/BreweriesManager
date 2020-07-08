@@ -1,4 +1,4 @@
-﻿using Domain;
+﻿using Domain.Models;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,11 +12,6 @@ namespace Persistence
             List<Wholesaler> wholesalers = GetWholesalers();
             List<Beer> beers = GetBeers();
 
-            if (!context.Beers.Any())
-            {
-                context.Beers.AddRange(beers);
-            }
-
             if (!context.Breweries.Any())
             {
                 context.Breweries.AddRange(breweries);
@@ -25,6 +20,11 @@ namespace Persistence
             if (!context.Wholesalers.Any())
             {
                 context.Wholesalers.AddRange(wholesalers);
+            }
+
+            if (!context.Beers.Any())
+            {
+                context.Beers.AddRange(beers);
             }
 
             if (context.ChangeTracker.HasChanges())
@@ -78,7 +78,8 @@ namespace Persistence
                     new Beer
                     {
                         Name = "Grimbergen blonde",
-                        Price = 2.47M
+                        Price = 2.47M/*,
+                        Brewery = GetBreweries().Where(x => x.Name == "").First()*/
                     },
                     new Beer
                     {
@@ -92,7 +93,7 @@ namespace Persistence
                     },
                     new Beer
                     {
-                        Name = "Grimbergen brune",
+                        Name = "Leffe brune",
                         Price = 2.63M
                     },
                     new Beer

@@ -1,5 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Domain.Repos;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Persistence.Repos
@@ -15,7 +17,15 @@ namespace Persistence.Repos
             _entities = _context.Set<T>();
         }
 
-        public async void Delete(int id)
+        public void Delete(int id)
+        {
+            T entity = _entities.Find(id);
+
+            if (entity != null)
+                _entities.Remove(entity);
+        }
+
+        public async Task DeleteAsync(int id)
         {
             T entity = await _entities.FindAsync(id);
 
@@ -23,14 +33,24 @@ namespace Persistence.Repos
                 _entities.Remove(entity);
         }
 
-        public async Task<T> Get(int id)
+        public T Get(int id)
         {
-            return await _entities.FindAsync(id);
+            return _entities.Find(id);
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public IEnumerable<T> GetAll()
+        {
+            return _entities.ToList();
+        }
+
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
             return await _entities.ToListAsync();
+        }
+
+        public async Task<T> GetAsync(int id)
+        {
+            return await _entities.FindAsync(id);
         }
 
         public void Insert(T entity)
@@ -38,15 +58,29 @@ namespace Persistence.Repos
             _entities.Add(entity);
         }
 
-        public async Task<bool> SaveAll()
+        public async Task InsertAsync(T entity)
+        {
+            await _entities.AddAsync(entity);
+        }
+
+        public bool SaveAll()
+        {
+            return _context.SaveChanges() > 0;
+        }
+
+        public async Task<bool> SaveAllAsync()
         {
             return await _context.SaveChangesAsync() > 0;
         }
 
         public void Update(T entity)
         {
-            _entities.Attach(entity);
             _context.Entry(entity).State = EntityState.Modified;
+        }
+
+        public Task UpdateAsync(T entity)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain
+namespace Domain.Models
 {
     public class Beer
     {
