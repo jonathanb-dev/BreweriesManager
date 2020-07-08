@@ -6,6 +6,6 @@ namespace Domain
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Beer> Beers { get; set; }
+        public ICollection<WholesalerBeer> WholesalerBeers { get; set; }
     }
 }

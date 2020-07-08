@@ -2,11 +2,11 @@
 
 namespace Persistence.Repos
 {
-    public class BeerRepository : Repository<Beer>, IBeerRepository
+    class WholesalerRepository : Repository<Wholesaler>, IWholesalerRepository
     {
         private DataContext _context;
 
-        public BeerRepository(DataContext context) : base(context)
+        public WholesalerRepository(DataContext context) : base(context)
         {
             _context = context;
         }
