@@ -25,47 +25,51 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBreweries()
+        public async Task<ActionResult<IEnumerable<BreweryDto>>> GetBreweries()
         {
             var breweries = await _service.ListAsync();
 
-            var mappedResult = _mapper.Map<IEnumerable<BreweriesListDto>>(breweries);
+            IEnumerable<BreweriesListDto> result = _mapper.Map<IEnumerable<BreweriesListDto>>(breweries);
 
-            return Ok(mappedResult);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetBrewery(int id)
+        public async Task<ActionResult<BreweryDto>> GetBrewery(int id)
         {
             var brewery = await _service.GetAsync(id);
 
             if (brewery == null)
                 return NotFound();
 
-            var mappedResult = _mapper.Map<BreweryDto>(brewery);
+            BreweryDto result = _mapper.Map<BreweryDto>(brewery);
 
-            return Ok(mappedResult);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Brewery>> PostBrewery(Brewery brewery)
+        public async Task<ActionResult<BreweryDto>> PostBrewery(BreweryDto breweryDto)
         {
-            _service.Add(brewery);
+            Brewery result = _mapper.Map<Brewery>(breweryDto);
+
+            _service.Add(result);
 
             await _service.SaveAsync();
 
-            return CreatedAtAction(nameof(GetBrewery), new { id = brewery.Id }); // TODO DTO
+            return CreatedAtAction(nameof(GetBrewery), new { id = result.Id }, _mapper.Map<BreweryDto>(result));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBrewery(int id, Brewery brewery)
+        public async Task<IActionResult> PutBrewery(int id, BreweryDto breweryDto)
         {
-            if (id != brewery.Id)
+            if (id != breweryDto.Id)
             {
                 return BadRequest();
             }
 
-            _service.Update(brewery);
+            Brewery result = _mapper.Map<Brewery>(breweryDto);
+
+            _service.Update(result);
 
             try
             {
@@ -87,7 +91,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Brewery>> DeleteBrewery(int id)
+        public async Task<IActionResult> DeleteBrewery(int id)
         {
             var brewery = await _service.GetAsync(id);
 
@@ -98,7 +102,7 @@ namespace API.Controllers
 
             await _service.SaveAsync();
 
-            return brewery;
+            return NoContent();
         }
 
         private bool BreweryExists(int id)

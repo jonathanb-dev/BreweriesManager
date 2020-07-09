@@ -25,47 +25,51 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetBeers()
+        public async Task<ActionResult<IEnumerable<BeerDto>>> GetBeers()
         {
             var beers = await _service.ListAsync();
 
-            var mappedResult = _mapper.Map<IEnumerable<BeersListDto>>(beers);
+            IEnumerable<BeersListDto> result = _mapper.Map<IEnumerable<BeersListDto>>(beers);
 
-            return Ok(mappedResult);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetBeer(int id)
+        public async Task<ActionResult<BeerDto>> GetBeer(int id)
         {
             var beer = await _service.GetAsync(id);
 
             if (beer == null)
                 return NotFound();
 
-            var mappedResult = _mapper.Map<BeerDto>(beer);
+            BeerDto result = _mapper.Map<BeerDto>(beer);
 
-            return Ok(mappedResult);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Beer>> PostBeer(Beer beer)
+        public async Task<ActionResult<BeerDto>> PostBeer(BeerDto beerDto)
         {
-            _service.Add(beer);
+            Beer result = _mapper.Map<Beer>(beerDto);
+
+            _service.Add(result);
 
             await _service.SaveAsync();
 
-            return CreatedAtAction(nameof(GetBeer), new { id = beer.Id }); // TODO DTO
+            return CreatedAtAction(nameof(GetBeer), new { id = result.Id }, _mapper.Map<BeerDto>(result));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBeer(int id, Beer beer)
+        public async Task<IActionResult> PutBeer(int id, BeerDto beerDto)
         {
-            if (id != beer.Id)
+            if (id != beerDto.Id)
             {
                 return BadRequest();
             }
 
-            _service.Update(beer);
+            Beer result = _mapper.Map<Beer>(beerDto);
+
+            _service.Update(result);
 
             try
             {
@@ -87,7 +91,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Beer>> DeleteBeer(int id)
+        public async Task<IActionResult> DeleteBeer(int id)
         {
             var beer = await _service.GetAsync(id);
 
@@ -98,7 +102,7 @@ namespace API.Controllers
 
             await _service.SaveAsync();
 
-            return beer;
+            return NoContent();
         }
 
         private bool BeerExists(int id)

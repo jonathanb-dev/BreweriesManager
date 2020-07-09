@@ -25,47 +25,51 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetWholesalers()
+        public async Task<ActionResult<IEnumerable<WholesalerDto>>> GetWholesalers()
         {
             var wholesalers = await _service.ListAsync();
 
-            var mappedResult = _mapper.Map<IEnumerable<WholesalersListDto>>(wholesalers);
+            IEnumerable<WholesalersListDto> result = _mapper.Map<IEnumerable<WholesalersListDto>>(wholesalers);
 
-            return Ok(mappedResult);
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetWholesaler(int id)
+        public async Task<ActionResult<WholesalerDto>> GetWholesaler(int id)
         {
             var wholesaler = await _service.GetAsync(id);
 
             if (wholesaler == null)
                 return NotFound();
 
-            var mappedResult = _mapper.Map<WholesalerDto>(wholesaler);
+            WholesalerDto result = _mapper.Map<WholesalerDto>(wholesaler);
 
-            return Ok(mappedResult);
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Wholesaler>> PostWholesaler(Wholesaler wholesaler)
+        public async Task<ActionResult<WholesalerDto>> PostWholesaler(WholesalerDto wholesalerDto)
         {
-            _service.Add(wholesaler);
+            Wholesaler result = _mapper.Map<Wholesaler>(wholesalerDto);
+
+            _service.Add(result);
 
             await _service.SaveAsync();
 
-            return CreatedAtAction(nameof(GetWholesaler), new { id = wholesaler.Id }); // TODO DTO
+            return CreatedAtAction(nameof(GetWholesaler), new { id = result.Id }, _mapper.Map<WholesalerDto>(result));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutWholesaler(int id, Wholesaler wholesaler)
+        public async Task<IActionResult> PutWholesaler(int id, WholesalerDto wholesalerDto)
         {
-            if (id != wholesaler.Id)
+            if (id != wholesalerDto.Id)
             {
                 return BadRequest();
             }
 
-            _service.Update(wholesaler);
+            Wholesaler result = _mapper.Map<Wholesaler>(wholesalerDto);
+
+            _service.Update(result);
 
             try
             {
@@ -87,7 +91,7 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Wholesaler>> DeleteWholesaler(int id)
+        public async Task<IActionResult> DeleteWholesaler(int id)
         {
             var wholesaler = await _service.GetAsync(id);
 
@@ -98,7 +102,7 @@ namespace API.Controllers
 
             await _service.SaveAsync();
 
-            return wholesaler;
+            return NoContent();
         }
 
         private bool WholesalerExists(int id)
