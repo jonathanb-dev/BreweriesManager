@@ -1,7 +1,7 @@
 ﻿using API.Dtos;
 using AutoMapper;
 using Domain.Models;
-using Domain.Repos;
+using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -14,20 +14,20 @@ namespace API.Controllers
     [ApiController]
     public class BeersController : ControllerBase
     {
-        private readonly IBeerRepository _repo;
+        private readonly IBeerService _service;
 
         private readonly IMapper _mapper;
 
-        public BeersController(IBeerRepository repo, IMapper mapper)
+        public BeersController(IBeerService service, IMapper mapper)
         {
-            _repo = repo;
+            _service = service;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetBeers()
         {
-            var beers = await _repo.GetAllAsync();
+            var beers = await _service.ListAsync();
 
             var mappedResult = _mapper.Map<IEnumerable<BeersListDto>>(beers);
 
@@ -37,7 +37,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBeer(int id)
         {
-            var beer = await _repo.GetAsync(id);
+            var beer = await _service.GetAsync(id);
 
             if (beer == null)
                 return NotFound();
@@ -50,9 +50,9 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Beer>> PostBeer(Beer beer)
         {
-            _repo.Insert(beer);
+            _service.Add(beer);
 
-            await _repo.SaveAllAsync();
+            await _service.SaveAsync();
 
             return CreatedAtAction(nameof(GetBeer), new { id = beer.Id }); // TODO DTO
         }
@@ -65,11 +65,11 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            _repo.Update(beer);
+            _service.Update(beer);
 
             try
             {
-                await _repo.SaveAllAsync();
+                await _service.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -89,14 +89,14 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Beer>> DeleteBeer(int id)
         {
-            var beer = await _repo.GetAsync(id);
+            var beer = await _service.GetAsync(id);
 
             if (beer == null)
                 return NotFound();
 
-            _repo.Delete(id);
+            _service.Delete(id);
 
-            await _repo.SaveAllAsync();
+            await _service.SaveAsync();
 
             return beer;
         }

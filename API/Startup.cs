@@ -1,5 +1,7 @@
+using Application.Services;
 using AutoMapper;
 using Domain.Repos;
+using Domain.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
@@ -29,9 +31,16 @@ namespace API
                 opt.UseSqlServer(Configuration.GetConnectionString("Default"));
             });
             services.AddAutoMapper(typeof(Startup));
+
+            // Repositories
             services.AddScoped<IBreweryRepository, BreweryRepository>();
             services.AddScoped<IWholesalerRepository, WholesalerRepository>();
             services.AddScoped<IBeerRepository, BeerRepository>();
+
+            // Services
+            services.AddScoped<IBreweryService, BreweryService>();
+            services.AddScoped<IWholesalerService, WholesalerService>();
+            services.AddScoped<IBeerService, BeerService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -17,6 +17,16 @@ namespace Persistence.Repos
             _entities = _context.Set<T>();
         }
 
+        public void Add(T entity)
+        {
+            _entities.Add(entity);
+        }
+
+        public async Task AddAsync(T entity)
+        {
+            await _entities.AddAsync(entity);
+        }
+
         public void Delete(int id)
         {
             T entity = _entities.Find(id);
@@ -38,37 +48,27 @@ namespace Persistence.Repos
             return _entities.Find(id);
         }
 
-        public IEnumerable<T> GetAll()
-        {
-            return _entities.ToList();
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync()
-        {
-            return await _entities.ToListAsync();
-        }
-
         public async Task<T> GetAsync(int id)
         {
             return await _entities.FindAsync(id);
         }
 
-        public void Insert(T entity)
+        public IEnumerable<T> List()
         {
-            _entities.Add(entity);
+            return _entities.ToList();
         }
 
-        public async Task InsertAsync(T entity)
+        public async Task<IEnumerable<T>> ListAsync()
         {
-            await _entities.AddAsync(entity);
+            return await _entities.ToListAsync();
         }
 
-        public bool SaveAll()
+        public bool Save()
         {
             return _context.SaveChanges() > 0;
         }
 
-        public async Task<bool> SaveAllAsync()
+        public async Task<bool> SaveAsync()
         {
             return await _context.SaveChangesAsync() > 0;
         }
