@@ -40,6 +40,17 @@ namespace API.Helpers
             CreateMap<BeerDto, Beer>();
             CreateMap<PostBeerDto, Beer>();
             CreateMap<PutBeerDto, Beer>();
+
+            // SaleHeader model to DTO
+            CreateMap<SaleHeader, SaleHeaderDto>();
+            CreateMap<SaleHeader, SaleHeaderListDto>();
+            CreateMap<SaleHeader, PostSaleHeaderDto>();
+            CreateMap<SaleHeader, PutSaleHeaderDto>();
+            // SaleHeader DTO to model
+            CreateMap<SaleHeaderDto, SaleHeader>();
+            CreateMap<SaleHeaderListDto, SaleHeader>();
+            CreateMap<PostSaleHeaderDto, SaleHeader>();
+            CreateMap<PutSaleHeaderDto, SaleHeader>();
         }
     }
 }

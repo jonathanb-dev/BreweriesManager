@@ -2,6 +2,7 @@
 
 namespace Domain.Models
 {
+    [Table("SaleLines")]
     public class SaleLine
     {
         public int Id { get; set; }
@@ -13,5 +14,12 @@ namespace Domain.Models
         public decimal UnitPrice { get; set; }
         [Column(TypeName = "decimal(3, 2)")]
         public decimal DiscountRate { get; set; }
+
+        public SaleLine()
+        {
+            Quantity = 0;
+            UnitPrice = 0;
+            DiscountRate = 0;
+        }
     }
 }

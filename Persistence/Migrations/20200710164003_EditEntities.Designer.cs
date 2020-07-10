@@ -10,8 +10,8 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200708100057_Entities")]
-    partial class Entities
+    [Migration("20200710164003_EditEntities")]
+    partial class EditEntities
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,7 +21,7 @@ namespace Persistence.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("Domain.Beer", b =>
+            modelBuilder.Entity("Domain.Models.Beer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,7 +44,7 @@ namespace Persistence.Migrations
                     b.ToTable("Beers");
                 });
 
-            modelBuilder.Entity("Domain.Brewery", b =>
+            modelBuilder.Entity("Domain.Models.Brewery", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,7 +59,55 @@ namespace Persistence.Migrations
                     b.ToTable("Breweries");
                 });
 
-            modelBuilder.Entity("Domain.Wholesaler", b =>
+            modelBuilder.Entity("Domain.Models.SaleHeader", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("WholesalerId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("WholesalerId");
+
+                    b.ToTable("SaleHeaders");
+                });
+
+            modelBuilder.Entity("Domain.Models.SaleLine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("BeerId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("DiscountRate")
+                        .HasColumnType("decimal(3, 2)");
+
+                    b.Property<decimal>("Quantity")
+                        .HasColumnType("decimal(5, 0)");
+
+                    b.Property<int?>("SaleHeaderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(7, 2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BeerId");
+
+                    b.HasIndex("SaleHeaderId");
+
+                    b.ToTable("SaleLines");
+                });
+
+            modelBuilder.Entity("Domain.Models.Wholesaler", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -74,7 +122,7 @@ namespace Persistence.Migrations
                     b.ToTable("Wholesalers");
                 });
 
-            modelBuilder.Entity("Domain.WholesalerBeer", b =>
+            modelBuilder.Entity("Domain.Models.WholesalerBeer", b =>
                 {
                     b.Property<int>("WholesalerId")
                         .HasColumnType("int");
@@ -89,25 +137,43 @@ namespace Persistence.Migrations
 
                     b.HasIndex("BeerId");
 
-                    b.ToTable("WholesalerBeer");
+                    b.ToTable("WholesalerBeers");
                 });
 
-            modelBuilder.Entity("Domain.Beer", b =>
+            modelBuilder.Entity("Domain.Models.Beer", b =>
                 {
-                    b.HasOne("Domain.Brewery", "Brewery")
+                    b.HasOne("Domain.Models.Brewery", "Brewery")
                         .WithMany("Beers")
                         .HasForeignKey("BreweryId");
                 });
 
-            modelBuilder.Entity("Domain.WholesalerBeer", b =>
+            modelBuilder.Entity("Domain.Models.SaleHeader", b =>
                 {
-                    b.HasOne("Domain.Beer", "Beer")
+                    b.HasOne("Domain.Models.Wholesaler", "Wholesaler")
+                        .WithMany("SaleHeaders")
+                        .HasForeignKey("WholesalerId");
+                });
+
+            modelBuilder.Entity("Domain.Models.SaleLine", b =>
+                {
+                    b.HasOne("Domain.Models.Beer", "Beer")
+                        .WithMany()
+                        .HasForeignKey("BeerId");
+
+                    b.HasOne("Domain.Models.SaleHeader", "SaleHeader")
+                        .WithMany("SaleLines")
+                        .HasForeignKey("SaleHeaderId");
+                });
+
+            modelBuilder.Entity("Domain.Models.WholesalerBeer", b =>
+                {
+                    b.HasOne("Domain.Models.Beer", "Beer")
                         .WithMany("WholesalerBeers")
                         .HasForeignKey("BeerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Wholesaler", "Wholesaler")
+                    b.HasOne("Domain.Models.Wholesaler", "Wholesaler")
                         .WithMany("WholesalerBeers")
                         .HasForeignKey("WholesalerId")
                         .OnDelete(DeleteBehavior.Cascade)

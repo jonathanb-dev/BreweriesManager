@@ -11,5 +11,10 @@ namespace Domain.Models
         public decimal Price { get; set; }
         public Brewery Brewery { get; set; }
         public ICollection<WholesalerBeer> WholesalerBeers { get; set; }
+
+        public Beer()
+        {
+            Price = 0;
+        }
     }
 }

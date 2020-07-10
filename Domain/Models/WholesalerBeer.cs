@@ -1,5 +1,8 @@
-﻿namespace Domain.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Domain.Models
 {
+    [Table("WholesalerBeers")]
     public class WholesalerBeer
     {
         public int WholesalerId { get; set; }

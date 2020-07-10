@@ -66,7 +66,7 @@ namespace API.Controllers
 
             SaleHeader result = _mapper.Map<SaleHeader>(postSaleHeaderDto);
 
-            result.wholesaler = wholesaler;
+            result.Wholesaler = wholesaler;
 
             _saleHeaderService.Add(result);
 
@@ -90,7 +90,7 @@ namespace API.Controllers
 
             SaleHeader result = _mapper.Map<SaleHeader>(putSaleHeaderDto);
 
-            result.wholesaler = wholesaler;
+            result.Wholesaler = wholesaler;
 
             _saleHeaderService.Update(result);
 

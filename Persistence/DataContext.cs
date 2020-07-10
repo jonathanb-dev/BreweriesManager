@@ -15,12 +15,18 @@ namespace Persistence
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Relationships
-            builder.Entity<Brewery>()
-                .HasMany(be => be.Beers)
-                .WithOne(br => br.Brewery)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.SetNull);
 
+            // Brewery
+            builder.Entity<Brewery>()
+                .HasMany(br => br.Beers)
+                .WithOne(be => be.Brewery);
+
+            // Wholesaler
+            builder.Entity<Wholesaler>()
+                .HasMany(w => w.SaleHeaders)
+                .WithOne(sh => sh.Wholesaler);
+
+            // WholesalerBeer
             builder.Entity<WholesalerBeer>()
                 .HasKey(wb => new { wb.WholesalerId, wb.BeerId });
 
@@ -31,8 +37,13 @@ namespace Persistence
 
             builder.Entity<WholesalerBeer>()
                 .HasOne(wb => wb.Beer)
-                .WithMany(w => w.WholesalerBeers)
+                .WithMany(b => b.WholesalerBeers)
                 .HasForeignKey(wb => wb.BeerId);
+
+            // SaleHeader
+            builder.Entity<SaleHeader>()
+                .HasMany(sh => sh.SaleLines)
+                .WithOne(sl => sl.SaleHeader);
         }
     }
 }

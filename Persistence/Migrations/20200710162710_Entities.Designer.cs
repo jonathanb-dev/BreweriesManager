@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Persistence;
 
 namespace Persistence.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20200710162710_Entities")]
+    partial class Entities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,7 +104,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("SaleHeaderId");
 
-                    b.ToTable("SaleLines");
+                    b.ToTable("SaleLine");
                 });
 
             modelBuilder.Entity("Domain.Models.Wholesaler", b =>
@@ -135,7 +137,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("BeerId");
 
-                    b.ToTable("WholesalerBeers");
+                    b.ToTable("WholesalerBeer");
                 });
 
             modelBuilder.Entity("Domain.Models.Beer", b =>
