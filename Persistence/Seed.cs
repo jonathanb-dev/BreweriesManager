@@ -78,8 +78,7 @@ namespace Persistence
                     new Beer
                     {
                         Name = "Grimbergen blonde",
-                        Price = 2.47M/*,
-                        Brewery = GetBreweries().Where(x => x.Name == "").First()*/
+                        Price = 2.47M
                     },
                     new Beer
                     {

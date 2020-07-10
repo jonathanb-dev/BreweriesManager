@@ -48,9 +48,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<WholesalerDto>> PostWholesaler(WholesalerDto wholesalerDto)
+        public async Task<ActionResult<WholesalerDto>> PostWholesaler(PostWholesalerDto postWholesalerDto)
         {
-            Wholesaler result = _mapper.Map<Wholesaler>(wholesalerDto);
+            Wholesaler result = _mapper.Map<Wholesaler>(postWholesalerDto);
 
             _service.Add(result);
 
@@ -60,14 +60,14 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutWholesaler(int id, WholesalerDto wholesalerDto)
+        public async Task<IActionResult> PutWholesaler(int id, PutWholesalerDto putWholesalerDto)
         {
-            if (id != wholesalerDto.Id)
+            if (id != putWholesalerDto.Id)
             {
                 return BadRequest();
             }
 
-            Wholesaler result = _mapper.Map<Wholesaler>(wholesalerDto);
+            Wholesaler result = _mapper.Map<Wholesaler>(putWholesalerDto);
 
             _service.Update(result);
 

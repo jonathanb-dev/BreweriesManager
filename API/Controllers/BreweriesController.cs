@@ -48,9 +48,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BreweryDto>> PostBrewery(BreweryDto breweryDto)
+        public async Task<ActionResult<BreweryDto>> PostBrewery(PostBreweryDto postBreweryDto)
         {
-            Brewery result = _mapper.Map<Brewery>(breweryDto);
+            Brewery result = _mapper.Map<Brewery>(postBreweryDto);
 
             _service.Add(result);
 
@@ -60,14 +60,14 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBrewery(int id, BreweryDto breweryDto)
+        public async Task<IActionResult> PutBrewery(int id, PutBreweryDto putBreweryDto)
         {
-            if (id != breweryDto.Id)
+            if (id != putBreweryDto.Id)
             {
                 return BadRequest();
             }
 
-            Brewery result = _mapper.Map<Brewery>(breweryDto);
+            Brewery result = _mapper.Map<Brewery>(putBreweryDto);
 
             _service.Update(result);
 

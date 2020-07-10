@@ -10,13 +10,16 @@ namespace Persistence
         public DbSet<Beer> Beers { get; set; }
         public DbSet<Brewery> Breweries { get; set; }
         public DbSet<Wholesaler> Wholesalers { get; set; }
+        public DbSet<SaleHeader> SaleHeaders { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             // Relationships
             builder.Entity<Brewery>()
                 .HasMany(be => be.Beers)
-                .WithOne(br => br.Brewery);
+                .WithOne(br => br.Brewery)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<WholesalerBeer>()
                 .HasKey(wb => new { wb.WholesalerId, wb.BeerId });

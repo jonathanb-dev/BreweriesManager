@@ -36,11 +36,13 @@ namespace API
             services.AddScoped<IBreweryRepository, BreweryRepository>();
             services.AddScoped<IWholesalerRepository, WholesalerRepository>();
             services.AddScoped<IBeerRepository, BeerRepository>();
+            services.AddScoped<ISaleHeaderRepository, SaleHeaderRepository>();
 
             // Services
             services.AddScoped<IBreweryService, BreweryService>();
             services.AddScoped<IWholesalerService, WholesalerService>();
             services.AddScoped<IBeerService, BeerService>();
+            services.AddScoped<ISaleHeaderService, SaleHeaderService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

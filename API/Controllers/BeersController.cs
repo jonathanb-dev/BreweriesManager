@@ -14,20 +14,33 @@ namespace API.Controllers
     [ApiController]
     public class BeersController : ControllerBase
     {
-        private readonly IBeerService _service;
+        private readonly IBeerService _beerService;
+        private readonly IBreweryService _breweryService;
 
         private readonly IMapper _mapper;
 
-        public BeersController(IBeerService service, IMapper mapper)
+        public BeersController(IBeerService beerService, IBreweryService breweryService, IMapper mapper)
         {
-            _service = service;
+            _beerService = beerService;
+            _breweryService = breweryService;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BeerDto>>> GetBeers()
         {
-            var beers = await _service.ListAsync();
+            var beers = await _beerService.ListAsync();
+
+            IEnumerable<BeersListDto> result = _mapper.Map<IEnumerable<BeersListDto>>(beers);
+
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("[action]")]
+        public async Task<ActionResult<IEnumerable<BeerDto>>> GetBeersPerBrewery()
+        {
+            var beers = await _beerService.ListAsync();
 
             IEnumerable<BeersListDto> result = _mapper.Map<IEnumerable<BeersListDto>>(beers);
 
@@ -37,7 +50,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<BeerDto>> GetBeer(int id)
         {
-            var beer = await _service.GetAsync(id);
+            var beer = await _beerService.GetAsync(id);
 
             if (beer == null)
                 return NotFound();
@@ -48,32 +61,46 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<BeerDto>> PostBeer(BeerDto beerDto)
+        public async Task<ActionResult<BeerDto>> PostBeer(PostBeerDto postBeerDto)
         {
-            Beer result = _mapper.Map<Beer>(beerDto);
+            Brewery brewery = await _breweryService.GetAsync(postBeerDto.BreweryId);
 
-            _service.Add(result);
+            if (brewery == null)
+                return NotFound();
 
-            await _service.SaveAsync();
+            Beer result = _mapper.Map<Beer>(postBeerDto);
+
+            result.Brewery = brewery;
+
+            _beerService.Add(result);
+
+            await _beerService.SaveAsync();
 
             return CreatedAtAction(nameof(GetBeer), new { id = result.Id }, _mapper.Map<BeerDto>(result));
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBeer(int id, BeerDto beerDto)
+        public async Task<IActionResult> PutBeer(int id, PutBeerDto putBeerDto)
         {
-            if (id != beerDto.Id)
+            if (id != putBeerDto.Id)
             {
                 return BadRequest();
             }
 
-            Beer result = _mapper.Map<Beer>(beerDto);
+            Brewery brewery = await _breweryService.GetAsync(putBeerDto.BreweryId);
 
-            _service.Update(result);
+            if (brewery == null)
+                return NotFound();
+
+            Beer result = _mapper.Map<Beer>(putBeerDto);
+
+            result.Brewery = brewery;
+
+            _beerService.Update(result);
 
             try
             {
-                await _service.SaveAsync();
+                await _beerService.SaveAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -93,14 +120,14 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBeer(int id)
         {
-            var beer = await _service.GetAsync(id);
+            var beer = await _beerService.GetAsync(id);
 
             if (beer == null)
                 return NotFound();
 
-            _service.Delete(id);
+            _beerService.Delete(id);
 
-            await _service.SaveAsync();
+            await _beerService.SaveAsync();
 
             return NoContent();
         }
