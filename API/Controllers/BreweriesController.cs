@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             var breweries = await _service.ListAsync();
 
-            IEnumerable<BreweriesListDto> result = _mapper.Map<IEnumerable<BreweriesListDto>>(breweries);
+            IEnumerable<BreweryDto> result = _mapper.Map<IEnumerable<BreweryDto>>(breweries);
 
             return Ok(result);
         }

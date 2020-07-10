@@ -34,11 +34,11 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SaleHeaderListDto>>> GetSales()
+        public async Task<ActionResult<IEnumerable<SaleHeaderDto>>> GetSales()
         {
             var saleHeaders = await _saleHeaderService.ListAsync();
 
-            IEnumerable<SaleHeaderListDto> result = _mapper.Map<IEnumerable<SaleHeaderListDto>>(saleHeaders);
+            IEnumerable<SaleHeaderDto> result = _mapper.Map<IEnumerable<SaleHeaderDto>>(saleHeaders);
 
             return Ok(result);
         }

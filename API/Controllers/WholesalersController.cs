@@ -29,7 +29,7 @@ namespace API.Controllers
         {
             var wholesalers = await _service.ListAsync();
 
-            IEnumerable<WholesalersListDto> result = _mapper.Map<IEnumerable<WholesalersListDto>>(wholesalers);
+            IEnumerable<WholesalerDto> result = _mapper.Map<IEnumerable<WholesalerDto>>(wholesalers);
 
             return Ok(result);
         }

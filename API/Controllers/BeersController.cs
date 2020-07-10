@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -29,20 +30,9 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<BeerDto>>> GetBeers()
         {
-            var beers = await _beerService.ListAsync();
+            var beers = await _beerService.BreweriesAndWholesalersListAsync();
 
-            IEnumerable<BeersListDto> result = _mapper.Map<IEnumerable<BeersListDto>>(beers);
-
-            return Ok(result);
-        }
-
-        [HttpGet]
-        [Route("[action]")]
-        public async Task<ActionResult<IEnumerable<BeerDto>>> GetBeersPerBrewery()
-        {
-            var beers = await _beerService.ListAsync();
-
-            IEnumerable<BeersListDto> result = _mapper.Map<IEnumerable<BeersListDto>>(beers);
+            IEnumerable<BeerDto> result = _mapper.Map<IEnumerable<BeerDto>>(beers);
 
             return Ok(result);
         }

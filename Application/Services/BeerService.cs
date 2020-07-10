@@ -20,6 +20,11 @@ namespace Application.Services
             _repo.Add(entity);
         }
 
+        public async Task<IEnumerable<Beer>> BreweriesAndWholesalersListAsync()
+        {
+            return await _repo.BreweriesAndWholesalersListAsync();
+        }
+
         public void Delete(int id)
         {
             _repo.Delete(id);
