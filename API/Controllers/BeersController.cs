@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -53,6 +52,11 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<BeerDto>> PostBeer(PostBeerDto postBeerDto)
         {
+            if (postBeerDto.Price == 0) // TODO validation
+            {
+                return BadRequest();
+            }
+
             Brewery brewery = await _breweryService.GetAsync(postBeerDto.BreweryId);
 
             if (brewery == null)
@@ -60,7 +64,7 @@ namespace API.Controllers
 
             Beer result = _mapper.Map<Beer>(postBeerDto);
 
-            result.Brewery = brewery;
+            result.Brewery = brewery; // TODO mapping
 
             _beerService.Add(result);
 

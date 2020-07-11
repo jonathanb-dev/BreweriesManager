@@ -8,6 +8,6 @@ namespace API.Dtos
         public string Name { get; set; }
         public decimal Price { get; set; }
         public BreweryDto Brewery { get; set; }
-        public ICollection<WholesalerBeersDto> WholesalerBeers { get; set; }
+        public ICollection<WholesalerBeerForBeerDto> WholesalerBeers { get; set; }
     }
 }

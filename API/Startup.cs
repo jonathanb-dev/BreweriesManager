@@ -37,11 +37,13 @@ namespace API
             services.AddScoped<IWholesalerRepository, WholesalerRepository>();
             services.AddScoped<IBeerRepository, BeerRepository>();
             services.AddScoped<ISaleHeaderRepository, SaleHeaderRepository>();
+            services.AddScoped<IWholesalerBeerRepository, WholesalerBeerRepository>();
 
             // Services
             services.AddScoped<IBreweryService, BreweryService>();
             services.AddScoped<IWholesalerService, WholesalerService>();
             services.AddScoped<IBeerService, BeerService>();
+            services.AddScoped<IWholesalerBeerService, WholesalerBeerService>();
             services.AddScoped<ISaleHeaderService, SaleHeaderService>();
         }
 

@@ -8,8 +8,7 @@ namespace Domain.Models
         public int Id { get; set; }
         public SaleHeader SaleHeader { get; set; }
         public Beer Beer { get; set; }
-        [Column(TypeName = "decimal(5, 0)")]
-        public decimal Quantity { get; set; }
+        public int Quantity { get; set; }
         [Column(TypeName = "decimal(7, 2)")]
         public decimal UnitPrice { get; set; }
         [Column(TypeName = "decimal(3, 2)")]

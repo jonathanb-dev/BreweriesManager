@@ -30,15 +30,21 @@ namespace API.Helpers
             CreateMap<Beer, BeerDto>();
             CreateMap<Beer, PostBeerDto>();
             CreateMap<Beer, PutBeerDto>();
+            CreateMap<Beer, BeerForWholesalerBeerDto>();
             // Beer DTO to model
             CreateMap<BeerDto, Beer>();
             CreateMap<PostBeerDto, Beer>();
             CreateMap<PutBeerDto, Beer>();
+            CreateMap<BeerForWholesalerBeerDto, Beer>();
 
             // Wholesalerbeer model to DTO
-            CreateMap<WholesalerBeer, WholesalerBeersDto>();
+            CreateMap<WholesalerBeer, WholesalerBeerDto>();
+            CreateMap<WholesalerBeer, WholesalerBeerForBeerDto>();
+            CreateMap<WholesalerBeer, PostWholesalerBeerDto>();
             // Wholesalerbeer DTO to model
-            CreateMap<WholesalerBeersDto, WholesalerBeer>();
+            CreateMap<WholesalerBeerDto, WholesalerBeer>();
+            CreateMap<WholesalerBeerForBeerDto, WholesalerBeer>();
+            CreateMap<PostWholesalerBeerDto, WholesalerBeer>();
 
             // SaleHeader model to DTO
             CreateMap<SaleHeader, SaleHeaderDto>();
