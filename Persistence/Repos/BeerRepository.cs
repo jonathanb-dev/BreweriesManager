@@ -23,5 +23,12 @@ namespace Persistence.Repos
                 .ThenInclude(x => x.Wholesaler)
                 .ToListAsync();
         }
+
+        public async Task<Beer> WholesalerBeersGetAsync(int id)
+        {
+            return await _context.Beers
+                .Include(x => x.WholesalerBeers)
+                .FirstOrDefaultAsync(x => x.Id == id);
+        }
     }
 }

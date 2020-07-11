@@ -31,11 +31,13 @@ namespace API.Helpers
             CreateMap<Beer, PostBeerDto>();
             CreateMap<Beer, PutBeerDto>();
             CreateMap<Beer, BeerForWholesalerBeerDto>();
+            CreateMap<Beer, BeerForSaleLineDto>();
             // Beer DTO to model
             CreateMap<BeerDto, Beer>();
             CreateMap<PostBeerDto, Beer>();
             CreateMap<PutBeerDto, Beer>();
             CreateMap<BeerForWholesalerBeerDto, Beer>();
+            CreateMap<BeerForSaleLineDto, Beer>();
 
             // Wholesalerbeer model to DTO
             CreateMap<WholesalerBeer, WholesalerBeerDto>();
@@ -54,6 +56,13 @@ namespace API.Helpers
             CreateMap<SaleHeaderDto, SaleHeader>();
             CreateMap<PostSaleHeaderDto, SaleHeader>();
             CreateMap<PutSaleHeaderDto, SaleHeader>();
+
+            // SaleLine model to DTO
+            CreateMap<SaleLine, SaleLineDto>();
+            CreateMap<SaleLine, PostSaleLineDto>();
+            // SaleLine DTO to model
+            CreateMap<SaleLineDto, SaleLine>();
+            CreateMap<PostSaleLineDto, SaleLine>();
         }
     }
 }

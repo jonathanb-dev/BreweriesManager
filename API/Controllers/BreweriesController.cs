@@ -85,6 +85,7 @@ namespace API.Controllers
                 {
                     throw;
                 }*/
+                throw;
             }
 
             return NoContent();

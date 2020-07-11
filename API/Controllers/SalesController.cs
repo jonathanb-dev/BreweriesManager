@@ -3,9 +3,6 @@ using AutoMapper;
 using Domain.Models;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -33,16 +30,6 @@ namespace API.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<SaleHeaderDto>>> GetSales()
-        {
-            var saleHeaders = await _saleHeaderService.ListAsync();
-
-            IEnumerable<SaleHeaderDto> result = _mapper.Map<IEnumerable<SaleHeaderDto>>(saleHeaders);
-
-            return Ok(result);
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult<SaleHeaderDto>> GetSale(int id)
         {
@@ -64,73 +51,30 @@ namespace API.Controllers
             if (wholesaler == null)
                 return NotFound();
 
+            // Check stock
+            // Check if wholesaler sale this beer
+
             SaleHeader result = _mapper.Map<SaleHeader>(postSaleHeaderDto);
 
-            result.Wholesaler = wholesaler;
+            result.Wholesaler = wholesaler; // TODO mapping
+
+            /*foreach (SaleLine saleLine in result.SaleLines)
+            {
+                Beer beer = await _beerService.GetAsync(postSaleLine.BeerId);
+
+                if (beer == null)
+                    return NotFound();
+                saleLine.UnitPrice = saleLine.Beer.Price;
+            }*/
+
+            _saleHeaderService.Validate(result);
+            _saleHeaderService.Compute(result);
 
             _saleHeaderService.Add(result);
 
             await _saleHeaderService.SaveAsync();
 
             return CreatedAtAction(nameof(GetSale), new { id = result.Id }, _mapper.Map<SaleHeaderDto>(result));
-        }
-
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutSale(int id, PutSaleHeaderDto putSaleHeaderDto)
-        {
-            if (id != putSaleHeaderDto.Id)
-            {
-                return BadRequest();
-            }
-
-            Wholesaler wholesaler = await _wholesalerService.GetAsync(putSaleHeaderDto.WholeSalerId);
-
-            if (wholesaler == null)
-                return NotFound();
-
-            SaleHeader result = _mapper.Map<SaleHeader>(putSaleHeaderDto);
-
-            result.Wholesaler = wholesaler;
-
-            _saleHeaderService.Update(result);
-
-            try
-            {
-                await _saleHeaderService.SaveAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                /*if (TODO)
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }*/
-            }
-
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteSale(int id)
-        {
-            var saleHeader = await _saleHeaderService.GetAsync(id);
-
-            if (saleHeader == null)
-                return NotFound();
-
-            _saleHeaderService.Delete(id);
-
-            await _saleHeaderService.SaveAsync();
-
-            return NoContent();
-        }
-
-        private bool SaleExists(int id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

@@ -6,6 +6,8 @@ namespace Domain.Services
 {
     public interface IBeerService : IService<Beer>
     {
+        Task<Beer> WholesalerBeersGetAsync(int id);
         Task<IEnumerable<Beer>> BreweriesAndWholesalersListAsync();
+        void Validate(Beer beer);
     }
 }

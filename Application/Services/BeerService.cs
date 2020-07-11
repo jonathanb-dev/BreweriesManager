@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Domain.Repos;
 using Domain.Services;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -48,6 +49,19 @@ namespace Application.Services
         public void Update(Beer entity)
         {
             _repo.Update(entity);
+        }
+
+        public void Validate(Beer beer)
+        {
+            if (beer.Price == 0M)
+            {
+                throw new Exception("Beer price is required");
+            }
+        }
+
+        public async Task<Beer> WholesalerBeersGetAsync(int id)
+        {
+            return await _repo.WholesalerBeersGetAsync(id);
         }
     }
 }

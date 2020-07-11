@@ -1,7 +1,9 @@
 ﻿using Domain.Models;
 using Domain.Repos;
 using Domain.Services;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Application.Services
@@ -18,6 +20,11 @@ namespace Application.Services
         public void Add(SaleHeader entity)
         {
             _repo.Add(entity);
+        }
+
+        public void Compute(SaleHeader saleHeader)
+        {
+            saleHeader.Compute();
         }
 
         public void Delete(int id)
@@ -43,6 +50,24 @@ namespace Application.Services
         public void Update(SaleHeader entity)
         {
             _repo.Update(entity);
+        }
+
+        public void Validate(SaleHeader saleHeader)
+        {
+            if (saleHeader.SaleLines.Count == 0)
+            {
+                throw new Exception("Add at least one document line");
+            }
+
+            if (saleHeader.SaleLines
+                .AsEnumerable()
+                .GroupBy(x => x.Beer.Id)
+                .Where(g => g.Count() > 1)
+                .Any()
+            )
+            {
+                throw new Exception("Duplicate beers are not allowed");
+            }
         }
     }
 }

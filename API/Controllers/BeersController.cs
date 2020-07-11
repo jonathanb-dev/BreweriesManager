@@ -16,13 +16,20 @@ namespace API.Controllers
     {
         private readonly IBeerService _beerService;
         private readonly IBreweryService _breweryService;
+        private readonly IWholesalerService _wholesalerService;
 
         private readonly IMapper _mapper;
 
-        public BeersController(IBeerService beerService, IBreweryService breweryService, IMapper mapper)
+        public BeersController(
+            IBeerService beerService,
+            IBreweryService breweryService,
+            IWholesalerService wholesalerService,
+            IMapper mapper
+        )
         {
             _beerService = beerService;
             _breweryService = breweryService;
+            _wholesalerService = wholesalerService;
             _mapper = mapper;
         }
 
@@ -52,11 +59,6 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<BeerDto>> PostBeer(PostBeerDto postBeerDto)
         {
-            if (postBeerDto.Price == 0) // TODO validation
-            {
-                return BadRequest();
-            }
-
             Brewery brewery = await _breweryService.GetAsync(postBeerDto.BreweryId);
 
             if (brewery == null)
@@ -66,11 +68,35 @@ namespace API.Controllers
 
             result.Brewery = brewery; // TODO mapping
 
+            _beerService.Validate(result);
+
             _beerService.Add(result);
 
             await _beerService.SaveAsync();
 
             return CreatedAtAction(nameof(GetBeer), new { id = result.Id }, _mapper.Map<BeerDto>(result));
+        }
+
+        [HttpPost("{id}/wholesalers")]
+        public async Task<ActionResult<BeerDto>> PostWholesalerBeer(int id, PostWholesalerBeerForBeerDto postWholesalerBeerForBeerDto)
+        {
+            Beer beer = await _beerService.WholesalerBeersGetAsync(id);
+
+            if (beer == null)
+                return NotFound();
+
+            Wholesaler wholesaler = await _wholesalerService.GetAsync(postWholesalerBeerForBeerDto.WholesalerId);
+
+            if (wholesaler == null)
+                return NotFound();
+
+            beer.WholesalerBeers.Add(new WholesalerBeer { Wholesaler = wholesaler, Beer = beer });
+
+            _beerService.Update(beer);
+
+            await _beerService.SaveAsync();
+
+            return CreatedAtAction(nameof(GetBeer), new { id = beer.Id }, _mapper.Map<BeerDto>(beer));
         }
 
         [HttpPut("{id}")]
@@ -88,7 +114,7 @@ namespace API.Controllers
 
             Beer result = _mapper.Map<Beer>(putBeerDto);
 
-            result.Brewery = brewery;
+            result.Brewery = brewery; // TODO mapping
 
             _beerService.Update(result);
 
@@ -106,6 +132,7 @@ namespace API.Controllers
                 {
                     throw;
                 }*/
+                throw;
             }
 
             return NoContent();

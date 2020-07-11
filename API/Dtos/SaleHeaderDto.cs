@@ -6,7 +6,8 @@ namespace API.Dtos
     public class SaleHeaderDto
     {
         public int Id { get; set; }
-        public Wholesaler wholesaler { get; set; }
-        public ICollection<SaleLine> SaleLines { get; set; }
+        public WholesalerDto wholesaler { get; set; }
+        public decimal TotalVatExcluded { get; set; }
+        public ICollection<SaleLineDto> SaleLines { get; set; }
     }
 }
