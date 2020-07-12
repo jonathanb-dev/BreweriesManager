@@ -58,9 +58,6 @@ namespace API.Controllers
 
             WholesalerBeer result = _mapper.Map<WholesalerBeer>(postWholesalerBeerDto);
 
-            result.Wholesaler = wholesaler; // TODO mapping
-            result.Beer = beer; // TODO mapping
-
             _wholesalerBeerService.Add(result);
 
             await _wholesalerBeerService.SaveAsync();

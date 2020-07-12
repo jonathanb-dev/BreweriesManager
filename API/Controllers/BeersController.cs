@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -66,10 +67,6 @@ namespace API.Controllers
 
             Beer result = _mapper.Map<Beer>(postBeerDto);
 
-            result.Brewery = brewery; // TODO mapping
-
-            _beerService.Validate(result);
-
             _beerService.Add(result);
 
             await _beerService.SaveAsync();
@@ -78,19 +75,21 @@ namespace API.Controllers
         }
 
         [HttpPost("{id}/wholesalers")]
-        public async Task<ActionResult<BeerDto>> PostWholesalerBeer(int id, PostWholesalerBeerForBeerDto postWholesalerBeerForBeerDto)
+        public async Task<ActionResult<BeerDto>> PostWholesalerBeer(int id, PostAndPutWholesalerBeerForBeerDto postAndPutWholesalerBeerForBeerDto)
         {
             Beer beer = await _beerService.WholesalerBeersGetAsync(id);
 
             if (beer == null)
                 return NotFound();
 
-            Wholesaler wholesaler = await _wholesalerService.GetAsync(postWholesalerBeerForBeerDto.WholesalerId);
+            Wholesaler wholesaler = await _wholesalerService.GetAsync(postAndPutWholesalerBeerForBeerDto.WholesalerId);
 
             if (wholesaler == null)
                 return NotFound();
 
-            beer.WholesalerBeers.Add(new WholesalerBeer { Wholesaler = wholesaler, Beer = beer });
+            WholesalerBeer wholesalerBeer = _mapper.Map<WholesalerBeer>(postAndPutWholesalerBeerForBeerDto);
+
+            beer.WholesalerBeers.Add(wholesalerBeer);
 
             _beerService.Update(beer);
 
@@ -114,8 +113,6 @@ namespace API.Controllers
 
             Beer result = _mapper.Map<Beer>(putBeerDto);
 
-            result.Brewery = brewery; // TODO mapping
-
             _beerService.Update(result);
 
             try
@@ -134,6 +131,34 @@ namespace API.Controllers
                 }*/
                 throw;
             }
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}/wholesalers")]
+        public async Task<IActionResult> PutWholesalerBeer(int id, PostAndPutWholesalerBeerForBeerDto postAndPutWholesalerBeerForBeerDto)
+        {
+            Beer beer = await _beerService.WholesalerBeersGetAsync(id);
+
+            if (beer == null)
+                return NotFound();
+
+            Wholesaler wholesaler = await _wholesalerService.GetAsync(postAndPutWholesalerBeerForBeerDto.WholesalerId);
+
+            if (wholesaler == null)
+                return NotFound();
+
+            WholesalerBeer wholesalerBeer = beer.WholesalerBeers.AsEnumerable().FirstOrDefault(x => x.Wholesaler.Id == postAndPutWholesalerBeerForBeerDto.WholesalerId);
+
+            if (wholesalerBeer == null)
+                return NotFound();
+
+            wholesalerBeer.WholesalerId = postAndPutWholesalerBeerForBeerDto.WholesalerId;
+            wholesalerBeer.Stock = postAndPutWholesalerBeerForBeerDto.Stock;
+
+            _beerService.Update(beer);
+
+            await _beerService.SaveAsync();
 
             return NoContent();
         }

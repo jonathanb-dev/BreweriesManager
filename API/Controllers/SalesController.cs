@@ -51,24 +51,10 @@ namespace API.Controllers
             if (wholesaler == null)
                 return NotFound();
 
-            // Check stock
-            // Check if wholesaler sale this beer
-
             SaleHeader result = _mapper.Map<SaleHeader>(postSaleHeaderDto);
 
-            result.Wholesaler = wholesaler; // TODO mapping
-
-            /*foreach (SaleLine saleLine in result.SaleLines)
-            {
-                Beer beer = await _beerService.GetAsync(postSaleLine.BeerId);
-
-                if (beer == null)
-                    return NotFound();
-                saleLine.UnitPrice = saleLine.Beer.Price;
-            }*/
-
-            _saleHeaderService.Validate(result);
-            _saleHeaderService.Compute(result);
+            await _saleHeaderService.Validate(result);
+            await _saleHeaderService.Compute(result);
 
             _saleHeaderService.Add(result);
 

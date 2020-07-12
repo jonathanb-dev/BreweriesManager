@@ -2,6 +2,7 @@
 using Domain.Repos;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Persistence.Repos
@@ -22,6 +23,15 @@ namespace Persistence.Repos
                 .Include(x => x.WholesalerBeers)
                 .ThenInclude(x => x.Wholesaler)
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Beer>> PricesListAsync(List<int> beerIds)
+        {
+            /*return await _context.Beers
+                .Join(beerIds, b => b.Id, beerId => beerId, (b, beerId) => b)
+                .ToListAsync();*/
+
+            return await _context.Beers.Where(x => beerIds.Contains(x.Id)).ToListAsync();
         }
 
         public async Task<Beer> WholesalerBeersGetAsync(int id)

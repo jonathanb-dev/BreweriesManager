@@ -43,10 +43,12 @@ namespace API.Helpers
             CreateMap<WholesalerBeer, WholesalerBeerDto>();
             CreateMap<WholesalerBeer, WholesalerBeerForBeerDto>();
             CreateMap<WholesalerBeer, PostWholesalerBeerDto>();
+            CreateMap<WholesalerBeer, PostAndPutWholesalerBeerForBeerDto>();
             // Wholesalerbeer DTO to model
             CreateMap<WholesalerBeerDto, WholesalerBeer>();
             CreateMap<WholesalerBeerForBeerDto, WholesalerBeer>();
             CreateMap<PostWholesalerBeerDto, WholesalerBeer>();
+            CreateMap<PostAndPutWholesalerBeerForBeerDto, WholesalerBeer>();
 
             // SaleHeader model to DTO
             CreateMap<SaleHeader, SaleHeaderDto>();

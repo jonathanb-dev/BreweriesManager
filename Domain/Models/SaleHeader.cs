@@ -7,6 +7,7 @@ namespace Domain.Models
     public class SaleHeader
     {
         public int Id { get; set; }
+        public int WholesalerId { get; set; }
         public Wholesaler Wholesaler { get; set; }
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalVatExcluded { get; set; }

@@ -18,14 +18,14 @@ namespace Persistence
             // Relationships
 
             // Brewery
-            builder.Entity<Brewery>()
+            /*builder.Entity<Brewery>()
                 .HasMany(br => br.Beers)
-                .WithOne(be => be.Brewery);
+                .WithOne(be => be.Brewery);*/
 
             // Wholesaler
-            builder.Entity<Wholesaler>()
+            /*builder.Entity<Wholesaler>()
                 .HasMany(w => w.SaleHeaders)
-                .WithOne(sh => sh.Wholesaler);
+                .WithOne(sh => sh.Wholesaler);*/
 
             // WholesalerBeer
             builder.Entity<WholesalerBeer>()
@@ -34,17 +34,19 @@ namespace Persistence
             builder.Entity<WholesalerBeer>()
                 .HasOne(wb => wb.Wholesaler)
                 .WithMany(w => w.WholesalerBeers)
-                .HasForeignKey(wb => wb.WholesalerId);
+                .HasForeignKey(wb => wb.WholesalerId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<WholesalerBeer>()
                 .HasOne(wb => wb.Beer)
                 .WithMany(b => b.WholesalerBeers)
-                .HasForeignKey(wb => wb.BeerId);
+                .HasForeignKey(wb => wb.BeerId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // SaleHeader
-            builder.Entity<SaleHeader>()
+            /*builder.Entity<SaleHeader>()
                 .HasMany(sh => sh.SaleLines)
-                .WithOne(sl => sl.SaleHeader);
+                .WithOne(sl => sl.SaleHeader);*/
         }
     }
 }

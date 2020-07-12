@@ -8,6 +8,5 @@ namespace Domain.Services
     {
         Task<Beer> WholesalerBeersGetAsync(int id);
         Task<IEnumerable<Beer>> BreweriesAndWholesalersListAsync();
-        void Validate(Beer beer);
     }
 }

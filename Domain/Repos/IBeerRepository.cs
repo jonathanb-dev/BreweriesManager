@@ -8,5 +8,6 @@ namespace Domain.Repos
     {
         Task<Beer> WholesalerBeersGetAsync(int id);
         Task<IEnumerable<Beer>> BreweriesAndWholesalersListAsync();
+        Task<IEnumerable<Beer>> PricesListAsync(List<int> beerIds);
     }
 }

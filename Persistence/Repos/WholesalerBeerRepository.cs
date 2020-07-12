@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Domain.Repos;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,6 +23,13 @@ namespace Persistence.Repos
                 .Include(x => x.Beer)
                 .Where(x => x.WholesalerId == wholesalerId && x.BeerId == beerId)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IEnumerable<WholesalerBeer>> ListByWholesalerIdAsync(int wholesalerId)
+        {
+            return await _context.WholesalerBeers
+                .Where(x => x.WholesalerId == wholesalerId)
+                .ToListAsync();
         }
     }
 }

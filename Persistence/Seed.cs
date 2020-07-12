@@ -10,7 +10,7 @@ namespace Persistence
         {
             List<Brewery> breweries = GetBreweries();
             List<Wholesaler> wholesalers = GetWholesalers();
-            List<Beer> beers = GetBeers();
+            List<Beer> beers = GetBeers(breweries, wholesalers);
 
             if (!context.Breweries.Any())
             {
@@ -71,34 +71,61 @@ namespace Persistence
                 };
         }
 
-        private static List<Beer> GetBeers()
+        private static List<Beer> GetBeers(List<Brewery> breweries, List<Wholesaler> wholesalers)
         {
             return new List<Beer>
                 {
                     new Beer
                     {
                         Name = "Grimbergen blonde",
-                        Price = 2.47M
+                        Price = 2.47M,
+                        Brewery = breweries.AsEnumerable().Where(x => x.Name.Contains("Grimbergen")).First(),
+                        WholesalerBeers = new List<WholesalerBeer>()
+                            {
+                                new WholesalerBeer { Wholesaler = wholesalers.AsEnumerable().Where(x => x.Name.Contains("B")).First(), Stock = 7 }
+                            }
                     },
                     new Beer
                     {
                         Name = "Grimbergen brune",
-                        Price = 2.59M
+                        Price = 2.59M,
+                        Brewery = breweries.AsEnumerable().Where(x => x.Name.Contains("Grimbergen")).First(),
+                        WholesalerBeers = new List<WholesalerBeer>()
+                            {
+                                new WholesalerBeer { Wholesaler = wholesalers.AsEnumerable().Where(x => x.Name.Contains("A")).First(), Stock = 4 },
+                                new WholesalerBeer { Wholesaler = wholesalers.AsEnumerable().Where(x => x.Name.Contains("C")).First(), Stock = 9 }
+                            }
                     },
                     new Beer
                     {
                         Name = "Leffe blonde",
-                        Price = 2.51M
+                        Price = 2.51M,
+                        Brewery = breweries.AsEnumerable().Where(x => x.Name.Contains("Leffe")).First(),
+                        WholesalerBeers = new List<WholesalerBeer>()
+                            {
+                                new WholesalerBeer { Wholesaler = wholesalers.AsEnumerable().Where(x => x.Name.Contains("A")).First(), Stock = 13 },
+                                new WholesalerBeer { Wholesaler = wholesalers.AsEnumerable().Where(x => x.Name.Contains("B")).First(), Stock = 19 }
+                            }
                     },
                     new Beer
                     {
                         Name = "Leffe brune",
-                        Price = 2.63M
+                        Price = 2.63M,
+                        Brewery = breweries.AsEnumerable().Where(x => x.Name.Contains("Leffe")).First(),
+                        WholesalerBeers = new List<WholesalerBeer>()
+                            {
+                                new WholesalerBeer { Wholesaler = wholesalers.AsEnumerable().Where(x => x.Name.Contains("C")).First(), Stock = 5 }
+                            }
                     },
                     new Beer
                     {
                         Name = "Chimay bleue",
-                        Price = 2.82M
+                        Price = 2.82M,
+                        Brewery = breweries.AsEnumerable().Where(x => x.Name.Contains("Chimay")).First(),
+                        WholesalerBeers = new List<WholesalerBeer>()
+                            {
+                                new WholesalerBeer { Wholesaler = wholesalers.AsEnumerable().Where(x => x.Name.Contains("C")).First(), Stock = 3 }
+                            }
                     }
                 };
         }

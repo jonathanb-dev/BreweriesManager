@@ -6,7 +6,9 @@ namespace Domain.Models
     public class SaleLine
     {
         public int Id { get; set; }
+        public int SaleHeaderId { get; set; }
         public SaleHeader SaleHeader { get; set; }
+        public int BeerId { get; set; }
         public Beer Beer { get; set; }
         public int Quantity { get; set; }
         [Column(TypeName = "decimal(7, 2)")]

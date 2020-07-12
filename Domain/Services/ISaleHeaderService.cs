@@ -1,10 +1,11 @@
 ﻿using Domain.Models;
+using System.Threading.Tasks;
 
 namespace Domain.Services
 {
     public interface ISaleHeaderService : IService<SaleHeader>
     {
-        void Validate(SaleHeader saleHeader);
-        void Compute(SaleHeader saleHeader);
+        Task Validate(SaleHeader saleHeader);
+        Task Compute(SaleHeader saleHeader);
     }
 }

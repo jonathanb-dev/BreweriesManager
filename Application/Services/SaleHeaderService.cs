@@ -4,55 +4,67 @@ using Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace Application.Services
 {
     public class SaleHeaderService : ISaleHeaderService
     {
-        private readonly ISaleHeaderRepository _repo;
+        private readonly ISaleHeaderRepository _saleHeaderRepo;
+        private readonly IBeerRepository _beerRepository;
+        private readonly IWholesalerBeerRepository _wholesalerBeerRepo;
 
-        public SaleHeaderService(ISaleHeaderRepository repo)
+        public SaleHeaderService(ISaleHeaderRepository saleHeaderRepo, IBeerRepository beerRepository, IWholesalerBeerRepository wholesalerBeerRepo)
         {
-            _repo = repo;
+            _saleHeaderRepo = saleHeaderRepo;
+            _beerRepository = beerRepository;
+            _wholesalerBeerRepo = wholesalerBeerRepo;
         }
 
         public void Add(SaleHeader entity)
         {
-            _repo.Add(entity);
+            _saleHeaderRepo.Add(entity);
         }
 
-        public void Compute(SaleHeader saleHeader)
+        public async Task Compute(SaleHeader saleHeader)
         {
+            List<Beer> beers = (await _beerRepository.PricesListAsync(saleHeader.SaleLines.AsEnumerable().Select(x => x.BeerId).ToList())).ToList();
+
+            foreach (SaleLine saleLine in saleHeader.SaleLines)
+            {
+                saleLine.UnitPrice = beers.AsEnumerable().Where(x => x.Id == saleLine.BeerId).First().Price;
+            }
+
             saleHeader.Compute();
         }
 
         public void Delete(int id)
         {
-            _repo.Delete(id);
+            _saleHeaderRepo.Delete(id);
         }
 
         public async Task<SaleHeader> GetAsync(int id)
         {
-            return await _repo.GetAsync(id);
+            return await _saleHeaderRepo.GetAsync(id);
         }
 
         public async Task<IEnumerable<SaleHeader>> ListAsync()
         {
-            return await _repo.ListAsync();
+            return await _saleHeaderRepo.ListAsync();
         }
 
         public async Task<bool> SaveAsync()
         {
-            return await _repo.SaveAsync();
+            return await _saleHeaderRepo.SaveAsync();
         }
 
         public void Update(SaleHeader entity)
         {
-            _repo.Update(entity);
+            _saleHeaderRepo.Update(entity);
         }
 
-        public void Validate(SaleHeader saleHeader)
+        public async Task Validate(SaleHeader saleHeader)
         {
             if (saleHeader.SaleLines.Count == 0)
             {
@@ -61,12 +73,27 @@ namespace Application.Services
 
             if (saleHeader.SaleLines
                 .AsEnumerable()
-                .GroupBy(x => x.Beer.Id)
+                .GroupBy(x => x.BeerId)
                 .Where(g => g.Count() > 1)
                 .Any()
             )
             {
                 throw new Exception("Duplicate beers are not allowed");
+            }
+
+            List<WholesalerBeer> wholesalerBeers = (await _wholesalerBeerRepo.ListByWholesalerIdAsync(saleHeader.WholesalerId)).ToList();
+
+            List<int> beersNotAvailable = saleHeader.SaleLines
+                .AsEnumerable()
+                .Where(sl => wholesalerBeers
+                    .All(wb => wb.BeerId != sl.BeerId || wb.Stock < sl.Quantity)
+                )
+                .Select(x => x.BeerId)
+                .ToList();
+
+            if (beersNotAvailable.Count > 0)
+            {
+                throw new Exception("Following beer ids are not available at this wholesaler or are out of stock: " + String.Join(", ", beersNotAvailable));
             }
         }
     }

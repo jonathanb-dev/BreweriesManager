@@ -9,6 +9,7 @@ namespace Domain.Models
         public string Name { get; set; }
         [Column(TypeName = "decimal(7, 2)")]
         public decimal Price { get; set; }
+        public int BreweryId { get; set; }
         public Brewery Brewery { get; set; }
         public ICollection<WholesalerBeer> WholesalerBeers { get; set; }
 
