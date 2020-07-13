@@ -89,7 +89,7 @@ namespace API.Controllers
 
             WholesalerBeer wholesalerBeer = _mapper.Map<WholesalerBeer>(postAndPutWholesalerBeerForBeerDto);
 
-            beer.WholesalerBeers.Add(wholesalerBeer);
+            beer.WholesalerBeers.Add(wholesalerBeer); // TODO validate if it already exists
 
             _beerService.Update(beer);
 
@@ -153,7 +153,7 @@ namespace API.Controllers
             if (wholesalerBeer == null)
                 return NotFound();
 
-            wholesalerBeer.WholesalerId = postAndPutWholesalerBeerForBeerDto.WholesalerId;
+            wholesalerBeer.WholesalerId = postAndPutWholesalerBeerForBeerDto.WholesalerId; // TODO validate if it already exists
             wholesalerBeer.Stock = postAndPutWholesalerBeerForBeerDto.Stock;
 
             _beerService.Update(beer);
